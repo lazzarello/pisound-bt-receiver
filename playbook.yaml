@@ -1,0 +1,14 @@
+---
+- name: Build Bluetooth receiver
+  hosts: raspberrypi
+  become: yes
+  remote_user: pi
+
+  tasks:
+  - name: install dependencies
+    ansible.builtin.apt:
+      name: "{{ item }}"
+    with_items:
+    - pulseaudio
+    - pulseaudio-module-bluetooth
+    - pulsemixer

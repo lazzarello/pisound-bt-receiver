@@ -1,0 +1,1 @@
+raspberrypi ansible_hostname=raspberrypi.local ansible_user=pi
