@@ -15,6 +15,13 @@
     - pulseaudio-module-bluetooth
     - pulsemixer
   - name: configure bluetooth audio
-    template:
+    ansible.builtin.template:
       src: bluetooth-main.conf.j2
       dest: /etc/bluetooth/main.conf
+    notify:
+    - restart bluetooth
+  handlers:
+  - name: restart bluetooth
+    ansible.builtin.service:
+      name: bluetooth
+      state: restarted 
