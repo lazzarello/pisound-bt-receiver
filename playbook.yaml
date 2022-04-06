@@ -4,6 +4,8 @@
   become: yes
   remote_user: pi
 
+  vars:
+    a2dp_class: "0x20041C"
   tasks:
   - name: install dependencies
     ansible.builtin.apt:
@@ -12,3 +14,7 @@
     - pulseaudio
     - pulseaudio-module-bluetooth
     - pulsemixer
+  - name: configure bluetooth audio
+    template:
+      src: bluetooth-main.conf.j2
+      dest: /etc/bluetooth/main.conf
