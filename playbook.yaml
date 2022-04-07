@@ -6,6 +6,8 @@
 
   vars:
     a2dp_class: "0x20041C"
+    pulseaudio_default_sink: "1"
+    resample_method: "trivial"
   tasks:
   - name: install dependencies
     ansible.builtin.apt:
@@ -14,14 +16,39 @@
     - pulseaudio
     - pulseaudio-module-bluetooth
     - pulsemixer
+  - name: start pulseaudio
+    become: no
+    ansible.builtin.systemd:
+      name: pulseaudio
+      scope: user
+      state: started
+      enabled: True
   - name: configure bluetooth audio
     ansible.builtin.template:
       src: bluetooth-main.conf.j2
       dest: /etc/bluetooth/main.conf
     notify:
     - restart bluetooth
+  - name: configure pulse audio bluetooth
+    ansible.builtin.template:
+      src: pulse-default.pa.j2
+      dest: /etc/pulse/default.pa
+    notify:
+    - restart pulseaudio
+  - name: configure pulse audio daemon
+    ansible.builtin.template:
+      src: pulse-daemon.conf.j2
+      dest: /etc/pulse/daemon.conf
+    notify:
+    - restart pulseaudio
   handlers:
   - name: restart bluetooth
     ansible.builtin.service:
       name: bluetooth
+      state: restarted 
+  - name: restart pulseaudio 
+    become: no
+    ansible.builtin.systemd:
+      name: pulseaudio
+      scope: user
       state: restarted 

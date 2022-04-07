@@ -26,11 +26,28 @@ SSH to the pi and...
 
 ## Running the playbook
 
+`ansible-playbook -i hosts --check --diff playbook.yaml`
+
 ## Pairing a Bluetooth device
 
+The pairing process seems to happen in reverse, in that the RPi needs to pair to the phone, which presents a PIN on both endpoints. Tap on the phone PIN dialog and type "yes" into the shell to pair. My phone (Google Pixel 4a) disconnected after a few seconds. Clicking the `raspberrypi` device on my phone paired persistently. Not sure how to fix this bug...
+
+```
+bluetoothctl
+discoverable on
+scan on
+```
+Find the MAC address of the device you want to pair mine is below
+```
+pair 88:54:1F:4D:4E:81
+trust 88:54:1F:4D:4E:81
+```
+
+There is another bluetooth bug where sometimes the phone disconnects and pairing does not work from the phone. connecting from the RPi succeeds. Annnnd, it seems that the device disconnects without an interactive session. Booo. This is a downgrade from the desktop distribution. Perhaps because DBus isn't installed? IDK.
+
 TODO:
-  * Publish ansible playbook to make changes to default Raspbian
-    * Run playbook on fresh Raspbian Light
-  * disable password ssh
+  * tune [resample method in pulse](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/Audiophile/) (trivial method has audio dropouts)
+  * put bluetooth into discoverable mode by default
+  * improve the bluetooth pairing procedure
   * give host a new name
   * 3D print enclosure at noisebridge
